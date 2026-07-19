@@ -219,6 +219,21 @@ The same demo suite runs on demand in CI, with no local setup:
 
 ---
 
+## Run Smoke and Regression - GitHub Action
+
+On CI (GitHub Actions), Smoke is available as a manual trigger when needed. 
+Regression is scheduled nightly, but it first runs a smoke gate. The regression stage only starts if the smoke gate passes. 
+For on-demand runs, open Actions → CI → Run workflow, then choose the suite together with browser, workers, base_url, and api_url. Each run publishes an Allure report to GitHub Pages and uploads artifacts.
+
+Locally:
+
+```bash
+npm run test:smoke        # 3 critical smoke scenarios
+npm run test:regression   # full 12-case regression suite
+```
+
+---
+
 ## Run with Dynamic Parameters
 
 `npm test --` forwards all following arguments directly to the Playwright CLI. Browser, tags, workers, and test paths can therefore be selected at runtime without adding another script to `package.json`.
@@ -276,24 +291,6 @@ npm test -- tests/e2e \
 
 ---
 
-## Run Smoke and Regression
-
-On CI (GitHub Actions), the build gate runs automatically on every push/PR. Smoke is available as a manual trigger when needed. Regression is scheduled nightly, but it first runs a smoke gate; the regression stage only starts if the smoke gate passes. For on-demand runs, open Actions → CI → Run workflow, then choose the suite (demo, smoke, or regression) together with browser, workers, base_url, and api_url. Each run publishes an Allure report to GitHub Pages and uploads artifacts.
-
-Locally:
-
-```bash
-npm run test:smoke        # 3 critical smoke scenarios
-npm run test:regression   # full 12-case regression suite
-```
-
-Both accept native Playwright flags for cross-browser and parallel runs:
-
-```bash
-npm test -- tests/e2e --grep @regression --project=chromium --project=firefox --workers=4
-```
-
----
 
 ## View Reports
 
