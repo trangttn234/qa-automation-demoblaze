@@ -1,26 +1,16 @@
-import * as dotenv from 'dotenv';
+import * as fs from 'fs';
 import * as path from 'path';
 
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+export default function globalSetup(): void {
+  if (!process.env.CI) return;
 
-export class EnvManager {
-  private static instance: EnvManager;
+  const allureResults = path.resolve(
+    process.cwd(),
+    'reports/allure/results'
+  );
 
-  readonly baseURL: string;
-  readonly apiURL: string;
-
-  private constructor() {
-    this.baseURL =
-      process.env.BASE_URL || 'https://www.demoblaze.com';
-    this.apiURL =
-      process.env.API_URL || 'https://api.demoblaze.com';
-  }
-
-  static getInstance(): EnvManager {
-    if (!EnvManager.instance) {
-      EnvManager.instance = new EnvManager();
-    }
-
-    return EnvManager.instance;
-  }
+  fs.rmSync(allureResults, {
+    recursive: true,
+    force: true,
+  });
 }
