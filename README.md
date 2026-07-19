@@ -147,6 +147,7 @@ Verify the installed versions:
 ```bash
 node --version
 npm --version
+```
 
 ## Installation
 
@@ -155,6 +156,7 @@ git clone <repository-url>
 cd qa-automation-demoblaze
 npm install
 npx playwright install --with-deps
+```
 
 ## Demo Automation Scripts
 
