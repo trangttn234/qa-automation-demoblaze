@@ -18,6 +18,7 @@ on:
         default: smoke
         type: choice
         options:
+          - demo
           - smoke
           - regression
 
