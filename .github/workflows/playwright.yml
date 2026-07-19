@@ -8,7 +8,7 @@ on:
     branches: [main, develop]
 
   schedule:
-    - cron: '0 18 * * *'
+    - cron: '45 18 * * *'
 
   workflow_dispatch:
     inputs:
@@ -66,7 +66,7 @@ jobs:
 
   # 1) GATE CHECK
   build:
-    name: Build & Type Check
+    name: Gate Check
     if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -87,7 +87,7 @@ jobs:
 
   # 2) DEMO
   demo:
-    name: E2E Demo
+    name: E2E Demo Automation
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.suite == 'demo' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -141,9 +141,9 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  # 3) SMOKE - manual trigger only
+  # 3) SMOKE - manual trigger
   smoke:
-    name: E2E Smoke (Manual)
+    name: E2E Smoke
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.suite == 'smoke' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -199,7 +199,7 @@ jobs:
 
   # 4) SMOKE GATE FOR NIGHTLY REGRESSION
   smoke_gate:
-    name: E2E Smoke Gate
+    name: Smoke Gate Check
     if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.suite == 'regression') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -255,7 +255,7 @@ jobs:
 
   # 5) REGRESSION
   regression:
-    name: E2E Regression (Nightly)
+    name: E2E Regression
     needs: smoke_gate
     if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.suite == 'regression')) && needs.smoke_gate.result == 'success' }}
     runs-on: ubuntu-latest
