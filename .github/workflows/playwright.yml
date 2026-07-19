@@ -8,12 +8,12 @@ on:
     branches: [main, develop]
 
   schedule:
-    - cron: '45 18 * * *'
+    - cron: "0 18 * * *"
 
   workflow_dispatch:
     inputs:
       suite:
-        description: Suite to run manually
+        description: Suite to run
         required: true
         default: smoke
         type: choice
@@ -34,7 +34,7 @@ on:
       workers:
         description: Number of parallel workers
         required: true
-        default: '1'
+        default: "1"
         type: string
 
       base_url:
@@ -63,7 +63,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-
   # 1) GATE CHECK
   build:
     name: Gate Check
@@ -121,17 +120,12 @@ jobs:
           path: reports/playwright/
           retention-days: 7
 
-      - name: Generate Allure report
-        if: always()
-        run: |
-          npx allure generate reports/allure/results --clean -o reports/allure/report
-
-      - name: Upload Allure report artifact
+      - name: Upload raw Allure results artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: demo-allure-report
-          path: reports/allure/report/
+          name: demo-allure-results
+          path: reports/allure/results/
           retention-days: 7
 
   # 3) SMOKE - manual trigger
@@ -170,17 +164,12 @@ jobs:
           path: reports/playwright/
           retention-days: 7
 
-      - name: Generate Allure report
-        if: always()
-        run: |
-          npx allure generate reports/allure/results --clean -o reports/allure/report
-
-      - name: Upload Allure report artifact
+      - name: Upload raw Allure results artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: smoke-allure-report
-          path: reports/allure/report/
+          name: smoke-allure-results
+          path: reports/allure/results/
           retention-days: 7
 
   # 4) SMOKE GATE FOR NIGHTLY REGRESSION
@@ -219,17 +208,12 @@ jobs:
           path: reports/playwright/
           retention-days: 7
 
-      - name: Generate Allure report
-        if: always()
-        run: |
-          npx allure generate reports/allure/results --clean -o reports/allure/report
-
-      - name: Upload Allure report artifact
+      - name: Upload raw Allure results artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: smoke-gate-allure-report
-          path: reports/allure/report/
+          name: smoke-gate-allure-results
+          path: reports/allure/results/
           retention-days: 7
 
   # 5) REGRESSION
@@ -279,17 +263,12 @@ jobs:
           path: reports/results.xml
           retention-days: 14
 
-      - name: Generate Allure report
-        if: always()
-        run: |
-          npx allure generate reports/allure/results --clean -o reports/allure/report
-
-      - name: Upload Allure report artifact
+      - name: Upload raw Allure results artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: regression-allure-report
-          path: reports/allure/report/
+          name: regression-allure-results
+          path: reports/allure/results/
           retention-days: 14
 
   # 6) PAGES PUBLISH
@@ -300,18 +279,29 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
-      - name: Download Allure report artifact
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download raw Allure results artifacts
         if: always()
         uses: actions/download-artifact@v4
         with:
-          pattern: '*-allure-report'
-          path: reports/allure/report
+          pattern: "*-allure-results"
+          path: reports/allure/results
           merge-multiple: true
+
+      - name: Generate Allure report
+        if: always()
+        run: |
+          npx allure generate reports/allure/results --clean -o reports/allure/report
 
       - name: Upload Pages artifact
         if: always()
@@ -323,3 +313,7 @@ jobs:
         if: always()
         id: deployment
         uses: actions/deploy-pages@v4
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}

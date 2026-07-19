@@ -203,7 +203,6 @@ npm run allure:serve
 Or produce a static report and open it on demand:
 ```bash
 npm run allure:serve
-```
 npm run allure:generate
 npm run allure:open
 ```
@@ -215,7 +214,7 @@ The same demo suite runs on demand in CI, with no local setup:
 
 1. Open the repo’s **Actions** tab → select the **CI** workflow.
 2. Click **Run workflow**.
-3. Set **Suite** to demo (optionally adjust `browser`/`workers`) → **Run workflow**.
+3. Set **Suite to run** to **demo** (optionally adjust `browser`/`workers`) → **Run workflow**.
 4. When it finishes, view the published **Allure report** on GitHub Pages, or download the `demo-playwright-report` artifact.
 
 ---
