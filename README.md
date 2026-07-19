@@ -3,11 +3,11 @@
 The End-to-End automation framework built with **Playwright and TypeScript** for validating the [DemoBlaze](https://www.demoblaze.com) application. A few highlights:
 
 - **API Strategy** - every test drives the real UI, while a lightweight API layer handles setup and teardown (register users, seed and clear carts) so tests stay fast, focused, and reliable instead of brittle preconditions.
-- **Worker-isolated test data** — each parallel worker provisions its own unique account, so runs never collide and results stay deterministic.
-- **Cross-browser and parallel** — the same suite runs across Chromium and other engines and fans out over multiple workers, cutting wall-clock time without sacrificing stability.
-- **Configurable and no code changes** — target URL, browser, worker count, tag filters, and reporting are all driven by CLI parameters and environment variables.
-- **Comprehensive reporting** — interactive Allure reports both locally and published to GitHub Pages outputs for CI.
-- **CI/CD** — a single parameterized GitHub Actions workflow with three trigger-based flows (build gate on push/PR, on-demand smoke, scheduled/on-demand regression, each with a published Allure report).
+- **Worker-isolated test data** - each parallel worker provisions its own unique account, so runs never collide and results stay deterministic.
+- **Cross-browser and parallel** - the same suite runs across Chromium and other engines and fans out over multiple workers, cutting wall-clock time without sacrificing stability.
+- **Configurable and no code changes** - target URL, browser, worker count, tag filters, and reporting are all driven by CLI parameters and environment variables.
+- **Comprehensive reporting** - interactive Allure reports both locally and published to GitHub Pages outputs for CI.
+- **CI/CD** - a single parameterized GitHub Actions workflow with three trigger-based flows (build gate on push/PR, on-demand smoke, scheduled/on-demand regression, each with a published Allure report).
 
 # 1. Framework Structure and Rationale
 
@@ -52,16 +52,16 @@ qa-automation-demoblaze/
 │       │   │   └── product.page.ts            # Product interactions (add to cart)
 │       │   └── cart/
 │       │       ├── cart.elements.ts           # Cart & checkout selectors
-│       │       └── cart.page.ts               # Cart / checkout interactions
+│       │       └── cart.page.ts               # Cart/checkout interactions
 │       │
 │       └── utils/
 │           ├── enums/
 │           │   ├── cartTable.enum.ts          # Cart table column indexes
-│           │   └── messages.enum.ts           # Expected UI / validation messages
+│           │   └── messages.enum.ts           # Expected UI/validation messages
 │           └── helpers/
-│               ├── browserDialog.helper.ts    # Handles native JS alerts / confirms
-│               ├── table.helper.ts            # Reads / parses cart table rows
-│               └── wait.helper.ts             # Page / DOM readiness helpers
+│               ├── browserDialog.helper.ts    # Handles native JS alerts/confirms
+│               ├── table.helper.ts            # Reads/parses cart table rows
+│               └── wait.helper.ts             # Page/DOM readiness helpers
 │
 ├── tests/
 │   └── e2e/
@@ -96,12 +96,12 @@ login/
 `login.page.ts` uses those selectors to expose meaningful operations.
 
 When a selector changes, maintenance is normally limited to the elements file.  
-Isolating selectors in `*.elements.ts` also makes UI maintenance **AI-powered**: when the DOM changes, Playwright MCP combined with Playwright UI Mode inspects the live page source, extracts every locator on the page in one pass, and updates the matching `*.elements.ts` file — turning locator maintenance into a fast, AI-assisted step instead of manual selector hunting. The tests themselves stay deterministic and run directly through Playwright locally and in CI/CD.
+Isolating selectors in `*.elements.ts` also makes UI maintenance **AI-powered**: when the DOM changes, Playwright MCP combined with Playwright UI Mode inspects the live page source, extracts every locator on the page in one pass, and updates the matching `*.elements.ts` file - turning locator maintenance into a fast, AI-assisted step instead of manual selector hunting. The tests themselves stay deterministic and run directly through Playwright locally and in CI/CD.
 
 ## Separation of Responsibilities
 
 Domain models (`src/common/models`) define model; test inputs come from centralized JSON plus Faker for realistic data.  
-API controllers (`src/api/controllers`) are supporting infrastructure for fast state setup/teardown — they do not replace the UI coverage required by this assignment.
+API controllers (`src/api/controllers`) are supporting infrastructure for fast state setup/teardown - they do not replace the UI coverage required by this assignment.
 
 ## API Strategy
 
@@ -119,7 +119,7 @@ Parallel runs are safe because `test.fixture.ts` gives each worker a unique API-
 
 ## Reporting
 
-### Allure — the primary, stakeholder-facing report
+### Allure - the primary, stakeholder-facing report
 
 Allure is the framework’s report of record because it turns raw test output into a structured, navigable story:
 
@@ -162,10 +162,10 @@ npx playwright install --with-deps
 
 The Demo Automation Scripts is a focused four-test subset selected with the `@demo` tag. It demonstrates successful Login, Cart operations, Purchase Order completion, validation behavior, reusable test setup, and cleanup.
 
-- LGN-001 — Verify successful login with valid credentials
-- CRT-002 — Verify multiple category products can be added to the cart successfully
-- CRT-004 — Verify an order containing products from multiple categories can be placed successfully
-- CRT-006 — Verify order cannot be placed when required fields are empty
+- LGN-001 - Verify successful login with valid credentials
+- CRT-002 - Verify multiple category products can be added to the cart successfully
+- CRT-004 - Verify an order containing products from multiple categories can be placed successfully
+- CRT-006 - Verify order cannot be placed when required fields are empty
 
 All scripts runs API cleanup afterward, even when the test fails, so remaining items do not affect later scenarios.
 
@@ -244,7 +244,7 @@ npm test -- tests/e2e \
 
 ## Run Smoke and Regression
 
-On CI (GitHub Actions). The build gate runs automatically on every push / PR, and full regression runs nightly on schedule (see CI/CD Workflow). To run a suite on demand: Actions → CI → Run workflow, then pick suite (smoke or regression) along with browser, workers, base_url, and api_url. The run publishes an Allure report to GitHub Pages and uploads the Playwright HTML and JUnit artifacts.
+On CI (GitHub Actions). The build gate runs automatically on every push/PR, and full regression runs nightly on schedule (see CI/CD Workflow). To run a suite on demand: Actions → CI → Run workflow, then pick suite (smoke or regression) along with browser, workers, base_url, and api_url. The run publishes an Allure report to GitHub Pages and uploads the Playwright HTML artifacts.
 
 Locally:
 
