@@ -1,0 +1,6 @@
+BASE_URL=https://www.demoblaze.com
+API_URL=https://api.demoblaze.com
+
+HEADED=false
+
+ALLURE=true
