@@ -92,10 +92,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - uses: actions/checkout@v4
 
@@ -130,16 +126,13 @@ jobs:
         run: |
           npx allure generate reports/allure/results --clean -o reports/allure/report
 
-      - name: Upload Pages artifact
+      - name: Upload Allure report artifact
         if: always()
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
+          name: demo-allure-report
           path: reports/allure/report/
-
-      - name: Deploy to GitHub Pages
-        if: always()
-        id: deployment
-        uses: actions/deploy-pages@v4
+          retention-days: 7
 
   # 3) SMOKE - manual trigger
   smoke:
@@ -148,10 +141,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - uses: actions/checkout@v4
 
@@ -186,16 +175,13 @@ jobs:
         run: |
           npx allure generate reports/allure/results --clean -o reports/allure/report
 
-      - name: Upload Pages artifact
+      - name: Upload Allure report artifact
         if: always()
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
+          name: smoke-allure-report
           path: reports/allure/report/
-
-      - name: Deploy to GitHub Pages
-        if: always()
-        id: deployment
-        uses: actions/deploy-pages@v4
+          retention-days: 7
 
   # 4) SMOKE GATE FOR NIGHTLY REGRESSION
   smoke_gate:
@@ -203,10 +189,6 @@ jobs:
     if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.suite == 'regression') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - uses: actions/checkout@v4
@@ -242,16 +224,13 @@ jobs:
         run: |
           npx allure generate reports/allure/results --clean -o reports/allure/report
 
-      - name: Upload Pages artifact
+      - name: Upload Allure report artifact
         if: always()
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
+          name: smoke-gate-allure-report
           path: reports/allure/report/
-
-      - name: Deploy to GitHub Pages
-        if: always()
-        id: deployment
-        uses: actions/deploy-pages@v4
+          retention-days: 7
 
   # 5) REGRESSION
   regression:
@@ -260,10 +239,6 @@ jobs:
     if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.suite == 'regression')) && needs.smoke_gate.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - uses: actions/checkout@v4
@@ -308,6 +283,35 @@ jobs:
         if: always()
         run: |
           npx allure generate reports/allure/results --clean -o reports/allure/report
+
+      - name: Upload Allure report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-allure-report
+          path: reports/allure/report/
+          retention-days: 14
+
+  # 6) PAGES PUBLISH
+  publish_pages:
+    name: Publish GitHub Pages
+    needs: [demo, smoke, smoke_gate, regression]
+    if: ${{ always() && (needs.demo.result == 'success' || needs.smoke.result == 'success' || needs.smoke_gate.result == 'success' || needs.regression.result == 'success') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Download Allure report artifact
+        if: always()
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '*-allure-report'
+          path: reports/allure/report
+          merge-multiple: true
 
       - name: Upload Pages artifact
         if: always()

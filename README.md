@@ -7,7 +7,7 @@ The End-to-End automation framework built with **Playwright and TypeScript** for
 - **Cross-browser and parallel** - the same suite runs across Chromium and other engines and fans out over multiple workers, cutting wall-clock time without sacrificing stability.
 - **Configurable and no code changes** - target URL, browser, worker count, tag filters, and reporting are all driven by CLI parameters and environment variables.
 - **Comprehensive reporting** - interactive Allure reports both locally and published to GitHub Pages outputs for CI.
-- **CI/CD** - a single parameterized GitHub Actions workflow with three trigger-based flows (build gate on push/PR, on-demand smoke, scheduled/on-demand regression, each with a published Allure report).
+- **CI/CD** - a single parameterized GitHub Actions workflow with four flows: gate check on push/PR, demo automation on demand, manual smoke runs, and scheduled nightly regression with a smoke gate before the regression stage, each producing a published Allure report.
 
 # 1. Framework Structure and Rationale
 
@@ -279,7 +279,7 @@ npm test -- tests/e2e \
 
 ## Run Smoke and Regression
 
-On CI (GitHub Actions). The build gate runs automatically on every push/PR, and full regression runs nightly on schedule (see CI/CD Workflow). To run a suite on demand: Actions → CI → Run workflow, then pick suite (smoke or regression) along with browser, workers, base_url, and api_url. The run publishes an Allure report to GitHub Pages and uploads artifacts.
+On CI (GitHub Actions), the build gate runs automatically on every push/PR. Smoke is available as a manual trigger when needed. Regression is scheduled nightly, but it first runs a smoke gate; the regression stage only starts if the smoke gate passes. For on-demand runs, open Actions → CI → Run workflow, then choose the suite (demo, smoke, or regression) together with browser, workers, base_url, and api_url. Each run publishes an Allure report to GitHub Pages and uploads artifacts.
 
 Locally:
 
