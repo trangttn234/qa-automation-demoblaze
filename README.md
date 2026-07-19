@@ -1,8 +1,8 @@
-# QA Automation Framework — DemoBlaze
+# QA Automation Framework - DemoBlaze
 
 The End-to-End automation framework built with **Playwright and TypeScript** for validating the [DemoBlaze](https://www.demoblaze.com) application. A few highlights:
 
-- **API Strategy** — every test drives the real UI, while a lightweight API layer handles setup and teardown (register users, seed and clear carts) so tests stay fast, focused, and reliable instead of brittle preconditions.
+- **API Strategy** - every test drives the real UI, while a lightweight API layer handles setup and teardown (register users, seed and clear carts) so tests stay fast, focused, and reliable instead of brittle preconditions.
 - **Worker-isolated test data** — each parallel worker provisions its own unique account, so runs never collide and results stay deterministic.
 - **Cross-browser and parallel** — the same suite runs across Chromium and other engines and fans out over multiple workers, cutting wall-clock time without sacrificing stability.
 - **Configurable and no code changes** — target URL, browser, worker count, tag filters, and reporting are all driven by CLI parameters and environment variables.
@@ -121,10 +121,40 @@ Parallel runs are safe because `test.fixture.ts` gives each worker a unique API-
 
 ### Allure — the primary, stakeholder-facing report
 
-Allure is the framework's report of record because it turns raw test output into a structured, navigable story:
+Allure is the framework’s report of record because it turns raw test output into a structured, navigable story:
 
-- Organized by suite → feature → test
-- Cases are grouped the way people actually think about the product
+- **Organized by suite → feature → test.** Cases are grouped the way people actually think about the product.
+- **Business-level steps.** Because each test is broken into test-step(s) stages.
+- **Trend & history tracking.** When results are published run-over-run, Allure keeps a **history** of each test: pass/fail trends, flakiness, and how long a case has been green.
+- **Rich failure context.** Categorized defects, timings, attachments, and step-level detail make triage fast.
+
+### Playwright HTML — the engineering deep-dive
+
+Kept alongside Allure for the lowest-level detail: full traces, screenshots, videos, and the interactive trace viewer for step-by-step debugging of a specific failure.
+
+All output is written under the top-level `reports/` folder.
+
+---
+
+# 2. Steps to Execute the Demo Automation Scripts
+
+## Prerequisites
+- Node.js 18 or later
+- npm 9 or later
+
+Verify the installed versions:
+
+```bash
+node --version
+npm --version
+
+## Installation
+
+```bash
+git clone <repository-url>
+cd qa-automation-demoblaze
+npm install
+npx playwright install --with-deps
 
 ## Demo Automation Scripts
 
