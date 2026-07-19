@@ -1,6 +1,6 @@
 # QA Automation Framework — DemoBlaze
 
-The End-to-End automation framework built with **Playwright and TypeScript** for validating the DemoBlaze](https://www.demoblaze.com) application. A few highlights:
+The End-to-End automation framework built with **Playwright and TypeScript** for validating the [DemoBlaze](https://www.demoblaze.com) application. A few highlights:
 
 - **API Strategy** — every test drives the real UI, while a lightweight API layer handles setup and teardown (register users, seed and clear carts) so tests stay fast, focused, and reliable instead of brittle preconditions.
 - **Worker-isolated test data** — each parallel worker provisions its own unique account, so runs never collide and results stay deterministic.
