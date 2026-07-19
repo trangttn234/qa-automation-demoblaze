@@ -1,0 +1,77 @@
+{
+  "Samsung galaxy s6": {
+    "id": 1,
+    "price": 360,
+    "category": "Phones"
+  },
+  "Nokia lumia 1520": {
+    "id": 2,
+    "price": 820,
+    "category": "Phones"
+  },
+  "Nexus 6": {
+    "id": 3,
+    "price": 650,
+    "category": "Phones"
+  },
+  "Samsung galaxy s7": {
+    "id": 4,
+    "price": 800,
+    "category": "Phones"
+  },
+  "Iphone 6 32gb": {
+    "id": 5,
+    "price": 790,
+    "category": "Phones"
+  },
+  "Sony xperia z5": {
+    "id": 6,
+    "price": 320,
+    "category": "Phones"
+  },
+  "HTC One M9": {
+    "id": 7,
+    "price": 700,
+    "category": "Phones"
+  },
+  "Sony vaio i5": {
+    "id": 8,
+    "price": 790,
+    "category": "Laptops"
+  },
+  "Sony vaio i7": {
+    "id": 9,
+    "price": 790,
+    "category": "Laptops"
+  },
+  "MacBook air": {
+    "id": 11,
+    "price": 700,
+    "category": "Laptops"
+  },
+  "Dell i7 8gb": {
+    "id": 12,
+    "price": 700,
+    "category": "Laptops"
+  },
+  "2017 Dell 15.6 Inch": {
+    "id": 13,
+    "price": 700,
+    "category": "Laptops"
+  },
+  "MacBook Pro": {
+    "id": 15,
+    "price": 1100,
+    "category": "Laptops"
+  },
+  "Apple monitor 24": {
+    "id": 10,
+    "price": 400,
+    "category": "Monitors"
+  },
+  "ASUS Full HD": {
+    "id": 14,
+    "price": 230,
+    "category": "Monitors"
+  }
+}

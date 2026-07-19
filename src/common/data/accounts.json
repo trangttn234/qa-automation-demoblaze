@@ -1,0 +1,25 @@
+{
+  "workers": {
+    "chromium": {
+      "username": "qauto_chromium_v2",
+      "password": "Test@1234"
+    },
+    "firefox": {
+      "username": "qauto_firefox_v2",
+      "password": "Test@1234"
+    },
+    "webkit": {
+      "username": "qauto_webkit_v2",
+      "password": "Test@1234"
+    },
+    "default": {
+      "username": "qauto_default_v2",
+      "password": "Test@1234"
+    }
+  },
+  "invalid": {
+    "wrongPassword": "wrongpass123",
+    "nonExistentUser": "nonexist_xyz_999",
+    "randomPassword": "anypass"
+  }
+}
