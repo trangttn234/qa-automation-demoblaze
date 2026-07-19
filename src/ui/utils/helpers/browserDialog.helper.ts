@@ -1,5 +1,5 @@
 import { type Page, type Locator, type Dialog } from '@playwright/test';
-import { TimeoutConfig } from '../../../../common/config/timeoutConfig';
+import { TimeoutConfig } from '../../../common/config/timeoutConfig';
 
 export class BrowserDialog {
   static async clickAndAccept(page: Page, locator: Locator): Promise<string> {

@@ -2,7 +2,7 @@ import { APIRequestContext } from '@playwright/test';
 import { AccountController } from './account.controller';
 import { CartController } from './cart.controller';
 import { ProductController } from './product.controller';
-import { UserCredentials } from '../../../common/models/user.model';
+import { UserCredentials } from '../../common/models/user.model';
 
 export class ApiHelper {
     readonly account: AccountController;

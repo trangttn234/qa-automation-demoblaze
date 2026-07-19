@@ -1,5 +1,5 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
-import { UserCredentials, UserEndpoints } from '../../../common/models/user.model';
+import { UserCredentials, UserEndpoints } from '../../common/models/user.model';
 
 export class AccountController {
     constructor(private request: APIRequestContext) {}

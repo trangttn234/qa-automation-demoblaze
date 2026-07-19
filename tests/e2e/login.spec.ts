@@ -1,7 +1,7 @@
-import { test, expect } from '../../../src/fixtures/test.fixture';
-import { UserCredentials } from '../../../src/common/models/user.model';
-import { Messages } from '../../../src/ui/utils/enums';
-import accountsData from '../../../src/common/data/accounts.json';
+import { test, expect } from '../../src/fixtures/test.fixture';
+import { UserCredentials } from '../../src/common/models/user.model';
+import { Messages } from '../../src/ui/utils/enums';
+import accountsData from '../../src/common/data/accounts.json';
 
 const EMPTY_FIELD = '';
 const invalidCredential = accountsData.invalid;

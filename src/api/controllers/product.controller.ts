@@ -1,5 +1,5 @@
 import { APIRequestContext } from '@playwright/test';
-import { ProductEndpoints } from '../../../common/models/product.model';
+import { ProductEndpoints } from '../../common/models/product.model';
 
 export class ProductController {
     constructor(private request: APIRequestContext) {}

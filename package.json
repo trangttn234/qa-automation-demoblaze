@@ -5,9 +5,9 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "playwright test",
-    "test:demo": "playwright test tests/e2e --grep @demo --project=chromium",
-    "test:smoke": "playwright test tests/e2e --grep @smoke --project=chromium",
-    "test:regression": "playwright test tests/e2e --grep @regression --project=chromium",
+    "test:demo": "npm run allure:clean && playwright test tests/e2e --grep @demo --headed --project=chromium --workers=4 && npm run allure:generate && npm run allure:open",
+    "test:smoke": "npm run allure:clean && playwright test tests/e2e --grep @smoke --project=chromium --workers=4 && npm run allure:generate && npm run allure:open",
+    "test:regression": "npm run allure:clean && playwright test tests/e2e --grep @regression --project=chromium --workers=4 && npm run allure:generate && npm run allure:open",
     "test:report": "npm run allure:clean; npm run test:regression; npm run allure:serve",
     "report": "playwright show-report reports/playwright",
     "allure:clean": "rm -rf reports/allure/results reports/allure/report",

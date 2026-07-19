@@ -1,5 +1,5 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
-import { CartEndpoints } from '../../../common/models/order.model';
+import { CartEndpoints } from '../../common/models/order.model';
 
 export class CartController {constructor(private request: APIRequestContext) {}
 

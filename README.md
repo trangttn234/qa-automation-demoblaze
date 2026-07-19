@@ -180,7 +180,7 @@ npm run test:demo
 The script is a convenient preset equivalent to:
 
 ```bash
-npm test -- tests/e2e --grep @demo --project=chromium
+npm run allure:clean && playwright test tests/e2e --grep @demo --headed --project=chromium --workers=4 && npm run allure:generate && npm run allure:open
 ```
 
 ---

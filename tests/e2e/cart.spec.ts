@@ -1,8 +1,8 @@
-import { test, expect, injectAuthSession } from '../../../src/fixtures/test.fixture';
-import { ProductName, ProductHelper } from '../../../src/common/models/product.model';
-import { OrderData } from '../../../src/common/models/order.model';
-import { Messages } from '../../../src/ui/utils/enums';
-import { WaitHelper } from '../../../src/ui/utils/helpers/wait.helper';
+import { test, expect, injectAuthSession } from '../../src/fixtures/test.fixture';
+import { ProductName, ProductHelper } from '../../src/common/models/product.model';
+import { OrderData } from '../../src/common/models/order.model';
+import { Messages } from '../../src/ui/utils/enums';
+import { WaitHelper } from '../../src/ui/utils/helpers/wait.helper';
 
 test.describe('Cart E2E @cart @e2e @regression', () => {
   test.beforeEach(async ({ page, apiHelper, workerCredentials }) => {
