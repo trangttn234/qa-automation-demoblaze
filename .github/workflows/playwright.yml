@@ -102,13 +102,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Clean Allure results
+        run: npm run allure:clean
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps "${{ inputs.browser }}"
 
-      - name: Run E2E smoke tests
+      - name: Run E2E demo tests
         run: >
           npx playwright test tests/e2e
-          --grep @smoke
+          --grep @demo
           --project="${{ inputs.browser }}"
           --workers="${{ inputs.workers }}"
 
@@ -116,7 +119,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: smoke-playwright-report
+          name: demo-playwright-report
           path: reports/playwright/
           retention-days: 7
 
@@ -145,6 +148,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Clean Allure results
+        run: npm run allure:clean
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps "${{ inputs.browser }}"
@@ -190,6 +196,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Clean Allure results
+        run: npm run allure:clean
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps "${{ inputs.browser || 'chromium' }}"
 
@@ -234,6 +243,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Clean Allure results
+        run: npm run allure:clean
 
       - name: Install Playwright browsers
         run: >
@@ -290,13 +302,36 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Download raw Allure results artifacts
-        if: always()
+      - name: Clean stale Allure results
+        run: npm run allure:clean
+
+      - name: Download demo raw Allure results artifact
+        if: ${{ needs.demo.result == 'success' }}
         uses: actions/download-artifact@v4
         with:
-          pattern: "*-allure-results"
+          name: demo-allure-results
           path: reports/allure/results
-          merge-multiple: true
+
+      - name: Download smoke raw Allure results artifact
+        if: ${{ needs.smoke.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: smoke-allure-results
+          path: reports/allure/results
+
+      - name: Download smoke gate raw Allure results artifact
+        if: ${{ needs.smoke_gate.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: smoke-gate-allure-results
+          path: reports/allure/results
+
+      - name: Download regression raw Allure results artifact
+        if: ${{ needs.regression.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: regression-allure-results
+          path: reports/allure/results
 
       - name: Generate Allure report
         if: always()
