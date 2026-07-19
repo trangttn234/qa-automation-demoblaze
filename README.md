@@ -18,17 +18,17 @@ qa-automation-demoblaze/
 ├── src/
 │   ├── api/
 │   │   └── controllers/                       # API calls for fast setup/teardown
-│   │       ├── account.controller.ts          # Register / login users via API
-│   │       ├── cart.controller.ts             # Add / clear cart items via API
+│   │       ├── account.controller.ts          # Register/login users via API
+│   │       ├── cart.controller.ts             # Add/clear cart items via API
 │   │       ├── product.controller.ts          # Fetch product data via API
 │   │       └── index.ts                       # Barrel export + shared API client
 │   │
 │   ├── common/
 │   │   ├── config/
 │   │   │   ├── envManager.ts                  # Reads env vars (BASE_URL, API_URL, flags)
-│   │   │   └── timeoutConfig.ts               # Framework-specific dialog / wait timings
+│   │   │   └── timeoutConfig.ts               # Framework-specific dialog/wait timings
 │   │   ├── data/
-│   │   │   ├── accounts.json                  # Account per browser / worker
+│   │   │   ├── accounts.json                  # Account per browser/worker
 │   │   │   └── products.json                  # Product test data
 │   │   └── models/
 │   │       ├── user.model.ts                  # User domain type
@@ -128,7 +128,7 @@ Allure is the framework’s report of record because it turns raw test output in
 - **Trend & history tracking.** When results are published run-over-run, Allure keeps a **history** of each test: pass/fail trends, flakiness, and how long a case has been green.
 - **Rich failure context.** Categorized defects, timings, attachments, and step-level detail make triage fast.
 
-### Playwright HTML — the engineering deep-dive
+### Playwright HTML - the engineering deep-dive
 
 Kept alongside Allure for the lowest-level detail: full traces, screenshots, videos, and the interactive trace viewer for step-by-step debugging of a specific failure.
 
@@ -169,19 +169,54 @@ The Demo Automation Scripts is a focused four-test subset selected with the `@de
 
 All scripts runs API cleanup afterward, even when the test fails, so remaining items do not affect later scenarios.
 
-## Run the Demo Automation Scripts
+## Run the Demo Automation Scripts - Local
 
-The standard command runs the four Demo Automation Scripts:
+**Step 1: Install (first time only)**
+
+```bash
+npm ci
+npx playwright install
+```
+
+**Step 2: Run the four scripts in parallel**
+
+Each worker gets its own isolated account via the worker-scoped workerCredentials fixture - a unique username per worker (<base-username>_w<workerIndex>) signed up over the API before tests start. Because no two workers share a session, cart, or order, all four cases run concurrently without interference.
 
 ```bash
 npm run test:demo
 ```
 
 The script is a convenient preset equivalent to:
-
 ```bash
-npm run allure:clean && playwright test tests/e2e --grep @demo --headed --project=chromium --workers=4 && npm run allure:generate && npm run allure:open
+npm run allure:clean && playwright test tests/e2e --grep @demo --headed --project=chromium --workers=4
 ```
+
+Watch the terminal: the scripts start together and finish in a fraction of the sequential time. Prefer the ready-made preset.
+
+**Step 3: Observe the report locally**
+
+Results are collected into an Allure report. Serve it to open an interactive dashboard in the browser, where each test is inspectable with its steps, status, timings, and traces:
+```bash
+npm run allure:serve
+```
+
+Or produce a static report and open it on demand:
+```bash
+npm run allure:serve
+```
+npm run allure:generate
+npm run allure:open
+```
+
+
+## Run the Demo Automation Scripts - GitHub Action
+
+The same demo suite runs on demand in CI, with no local setup:
+
+1. Open the repo’s **Actions** tab → select the **CI** workflow.
+2. Click **Run workflow**.
+3. Set **Suite** to demo (optionally adjust `browser`/`workers`) → **Run workflow**.
+4. When it finishes, view the published **Allure report** on GitHub Pages, or download the `demo-playwright-report` artifact.
 
 ---
 
@@ -244,7 +279,7 @@ npm test -- tests/e2e \
 
 ## Run Smoke and Regression
 
-On CI (GitHub Actions). The build gate runs automatically on every push/PR, and full regression runs nightly on schedule (see CI/CD Workflow). To run a suite on demand: Actions → CI → Run workflow, then pick suite (smoke or regression) along with browser, workers, base_url, and api_url. The run publishes an Allure report to GitHub Pages and uploads the Playwright HTML artifacts.
+On CI (GitHub Actions). The build gate runs automatically on every push/PR, and full regression runs nightly on schedule (see CI/CD Workflow). To run a suite on demand: Actions → CI → Run workflow, then pick suite (smoke or regression) along with browser, workers, base_url, and api_url. The run publishes an Allure report to GitHub Pages and uploads artifacts.
 
 Locally:
 

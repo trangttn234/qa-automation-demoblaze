@@ -84,9 +84,65 @@ jobs:
       - name: Type check (build gate)
         run: npm run typecheck
 
-  # 2) SMOKE
+  # 2) DEMO
+  demo:
+    name: E2E Demo
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.suite == 'demo' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps "${{ inputs.browser }}"
+
+      - name: Run E2E smoke tests
+        run: >
+          npx playwright test tests/e2e
+          --grep @smoke
+          --project="${{ inputs.browser }}"
+          --workers="${{ inputs.workers }}"
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-playwright-report
+          path: reports/playwright/
+          retention-days: 7
+
+      - name: Generate Allure report
+        if: always()
+        run: |
+          npx allure generate reports/allure/results --clean -o reports/allure/report
+
+      - name: Upload Pages artifact
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: reports/allure/report/
+
+      - name: Deploy to GitHub Pages
+        if: always()
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # 3) SMOKE - manual trigger only
   smoke:
-    name: E2E Smoke + Allure Report
+    name: E2E Smoke (Manual)
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.suite == 'smoke' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -140,10 +196,67 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  # 3) REGRESSION
-  regression:
-    name: E2E Regression + Allure Report
+  # 4) SMOKE GATE FOR NIGHTLY REGRESSION
+  smoke_gate:
+    name: E2E Smoke Gate
     if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.suite == 'regression') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps "${{ inputs.browser || 'chromium' }}"
+
+      - name: Run E2E smoke tests as gate
+        run: >
+          npx playwright test tests/e2e
+          --grep @smoke
+          --project="${{ inputs.browser || 'chromium' }}"
+          --workers="${{ inputs.workers || '1' }}"
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-gate-playwright-report
+          path: reports/playwright/
+          retention-days: 7
+
+      - name: Generate Allure report
+        if: always()
+        run: |
+          npx allure generate reports/allure/results --clean -o reports/allure/report
+
+      - name: Upload Pages artifact
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: reports/allure/report/
+
+      - name: Deploy to GitHub Pages
+        if: always()
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # 5) REGRESSION
+  regression:
+    name: E2E Regression (Nightly)
+    needs: smoke_gate
+    if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.suite == 'regression')) && needs.smoke_gate.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
 
