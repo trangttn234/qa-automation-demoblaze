@@ -180,13 +180,13 @@ npx playwright install
 
 **Step 2: Run the four scripts in parallel**
 
-Each worker gets its own isolated account via the worker-scoped workerCredentials fixture - a unique username per worker (<base-username>_w<workerIndex>) signed up over the API before tests start. Because no two workers share a session, cart, or order, all four cases run concurrently without interference.
+Each worker gets its own isolated account via the worker-scoped workerCredentials fixture - a unique username per worker (<base-username><workerIndex>) signed up over the API before tests start. Because no two workers share a session, cart, or order, all four cases run concurrently without interference.
 
 ```bash
 npm run test:demo
 ```
 
-The script is a convenient preset equivalent to:
+Or run:
 ```bash
 npm run allure:clean && playwright test tests/e2e --grep @demo --headed --project=chromium --workers=4
 ```
